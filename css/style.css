@@ -1,0 +1,25 @@
+*{
+    /* box-sizing: border-box; */
+}
+#gameWindow{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    
+    margin: 0 auto;
+}
+table{
+    user-select: none;
+    cursor: none;
+    background-color: black;
+    border: 8px solid black;
+    margin: 0;
+    padding: 0;
+    border-spacing: 0;
+}
+td{
+    height: 15px;
+    width: 15px;
+    background-color: aliceblue;
+}
