@@ -1,105 +1,202 @@
-let gameBoard = {
-  gameWindow: {},
-  width: 0,
-  height: 0,
-  arr: [],
-  key: "",
-  gameTimer: 0,
-  init: function () {
-    gameWindow = document.getElementById("gameWindow");
-    this.width = 50;
-    this.height = 40;
-    arr = [];
-    gameWindow.addEventListener("click", stopInterval);
-    document.addEventListener("keydown", onKeydown);
-
+class GameBoard {
+  constructor(width, height){
+    this.width = width;
+    this.height = height;
+    this.posArr = [];
+    this.key = "";
+    this.gameTimer = 0;
+    this.gameSpeed = 200;
+    for(let i=0; i < this.height; i++){
+      for(let j=0; j < this.width; j++){
+        this.posArr.push({
+          0: undefined,
+          1: i,
+          2: j});
+      }
+    }
+    
+  }
+  initTable(parentElement){
     let table = document.createElement("table");
+    let domArr = [];
     for (let i = 0; i < this.height; i++) {
       let tr = document.createElement("tr");
       table.appendChild(tr);
       for (let j = 0; j < this.width; j++) {
         let td = document.createElement("td");
-        td.row = i;
-        td.rowIndex = j;
-        td.gameIcon = null;
-        this.arr.push(td);
         tr.appendChild(td);
+        domArr.push(td);
       }
     }
-    gameWindow.appendChild(table);
-  },
-};
-
-let snake = {
-  arr: [],
-  currentDirection: "ArrowRight",
-  init: function (initialLength) {
+    parentElement.appendChild(table);
+    return domArr;
+  }
+  pos(i, j){
+    return this.width * i + j
+  }
+}
+class Snake {
+  constructor(initialLength, gameBoard){
+    this.gameBoard = gameBoard;
+    this.arr = [];
+    this.speed = 1;
+    this.currentDirection = "ArrowRight";
     for (let i = 0; i < initialLength; i++) {
-      let newNode = gameBoard.arr[pos(gameBoard.height / 2, i)];
-      newNode.gameIcon = 0;
+      let newNode = gameBoard.posArr[gameBoard.pos(gameBoard.height / 2, i)];
+      newNode[0] = 0;
       this.arr.push(newNode);
     }
-  },
-  update: function () {
-    if (gameBoard.key === "ArrowUp") {
+  }
+  updateDirection(){
+    if (this.gameBoard.key === "ArrowUp") {
       if (this.currentDirection !== "ArrowDown") {
         this.currentDirection = "ArrowUp";
       }
-    } else if (gameBoard.key === "ArrowDown") {
+    } else if (this.gameBoard.key === "ArrowDown") {
       if (this.currentDirection !== "ArrowUp") {
         this.currentDirection = "ArrowDown";
       }
-    } else if (gameBoard.key === "ArrowLeft") {
+    } else if (this.gameBoard.key === "ArrowLeft") {
       if (this.currentDirection !== "ArrowRight") {
         this.currentDirection = "ArrowLeft";
       }
-    } else if (gameBoard.key === "ArrowRight") {
+    } else if (this.gameBoard.key === "ArrowRight") {
       if (this.currentDirection !== "ArrowLeft") {
         this.currentDirection = "ArrowRight";
       }
     }
-    let tail = this.arr.shift();
-    tail.gameIcon = undefined;
-    let headRow = this.arr[this.arr.length - 1].row;
-    let headRowIndex = this.arr[this.arr.length - 1].rowIndex;
+  }
+  updatePosition(){
+    this.updateDirection();
+    //if the player has triggered the snake to grow,
+    // simply dont update the tail for one iteration    
+    if (this.snakeGrow){
+      this.snakeGrow = false;
+    }
+    else{
+      let tail = this.arr.shift();
+      tail[0] = undefined;
+      this.arr[0][0] = -1;
+    }
+    let oldHead = this.arr[this.arr.length-1];
+    let oldRow = oldHead[1];
+    let oldRowIndex = oldHead[2];
+    oldHead[0] = 0;
+
+  
     let newHead = {};
+    let pos = undefined;
     switch (this.currentDirection) {
       case "ArrowUp":
-        newHead = gameBoard.arr[pos(headRow - 1, headRowIndex)];
+        if(oldHead[1] !== 0)
+          pos = gameBoard.pos(oldHead[1] - this.speed, oldHead[2]);
+        else
+          pos= gameBoard.pos(gameBoard.height-1, oldHead[2]);
         break;
       case "ArrowDown":
-        newHead = gameBoard.arr[pos(headRow + 1, headRowIndex)];
+        if(oldHead[1] !== gameBoard.height-1)
+          pos = gameBoard.pos(oldHead[1] + this.speed, oldHead[2]);
+        else
+          pos = gameBoard.pos(0, oldHead[2]);
         break;
       case "ArrowLeft":
-        newHead = gameBoard.arr[pos(headRow, headRowIndex - 1)];
+        if(oldHead[2] !== 0)
+          pos = gameBoard.pos(oldHead[1], oldHead[2] - this.speed);
+        else
+          pos= gameBoard.pos(oldHead[1], gameBoard.width -1);
         break;
       case "ArrowRight":
-        newHead = gameBoard.arr[pos(headRow, headRowIndex + 1)];
+        if(oldHead[2] !== gameBoard.width-1)
+          pos = gameBoard.pos(oldHead[1], oldHead[2] + this.speed);
+        else
+          pos= gameBoard.pos(oldHead[1], 0);
         break;
     }
-    newHead.gameIcon = 0;
+    newHead = gameBoard.posArr[pos]
+    newHead[0]= 1;
     this.arr.push(newHead);
-  },
-};
-let pos = (i, j) => gameBoard.width * i + j;
-
-function onKeydown(e) {
-  gameBoard.key = e.key;
+  }
+  checkCollision(){
+    let head = this.arr[this.arr.length-1];
+    let idx = this.arr.indexOf(head)
+    if (idx !== this.arr.length-1)
+      return 1;
+    else if (bug){
+      bug.bugArr.forEach((val)=>{
+        if (val === head){
+          bug.onCollision(val);
+          this.snakeGrow = true;
+          return -1;
+        }
+      });
+    }
+    return 0;
+  }
 }
-let interval = setInterval(render, 100);
 
-let stopInterval = () => {
-  clearInterval(interval);
-};
+class Bug {
+  constructor(initialBugs, gameArr, snakeArr){
+    this.gameArr = gameArr;
+    this.snakeArr = snakeArr;
+    this.bugArr = [];
+    for(let i = 0; i < initialBugs; i++){
+      this.createBug();
+    }
+    
+  }
+  createBug(){
+    let freeSpace = this.gameArr.filter((val)=>(val[0] === undefined))
+    let randomSpace = Math.floor(Math.random()*freeSpace.length);
+    freeSpace[randomSpace][0] = 2;
+    this.bugArr.push(freeSpace[randomSpace]);
+  }
+  onCollision(affectedBug){
+    let idx = this.bugArr.findIndex((val)=> val === affectedBug)
+    this.bugArr.splice(idx,1);
+    this.createBug();
+    
+  }
+}
+const gameBoard = new GameBoard(38,28);
+const snake = new Snake(10,gameBoard);
+const bug = new Bug(5,gameBoard.posArr, snake.arr);
+let boardDOM = [];
+function globalInit(){
+  const gameWindow = document.getElementById("gameWindow");
+  const overlay = document.getElementById("overlay");
+  gameWindow.addEventListener("click",onClick);
+  document.addEventListener("keydown",onKeydown);
+  boardDOM = gameBoard.initTable(gameWindow);
+
+}
+globalInit();
 
 function render() {
-  gameBoard.gameTimer += 50 / 1000;
-  snake.update();
-  gameBoard.arr.forEach((val) => {
-    if (val.gameIcon == 0) val.style.background = "black";
-    else val.style.background = "aliceblue";
+  //count the seconds that the game has been running
+  gameBoard.gameTimer += gameBoard.gameSpeed / 1000;
+  
+  snake.updatePosition();
+  if(snake.checkCollision()){
+    
+  }
+    
+  gameBoard.posArr.forEach((val,idx) => {
+    if (val[0] == 0) boardDOM[idx].id = "snake-body";
+    else if (val[0] == 1) boardDOM[idx].id = "snake-head";
+    else if (val[0] == -1) boardDOM[idx].id = "snake-tail";
+    else if (val[0] == 2) boardDOM[idx].id = "bug-1";
+    else boardDOM[idx].id = undefined;
   });
 }
 
-gameBoard.init();
-snake.init(3);
+
+function onClick(e){
+  if(e.target.id==="start"){
+    let interval = setInterval(render, gameBoard.gameSpeed);
+    overlay.style.display = "none";
+  } 
+}
+function onKeydown(e) {
+  gameBoard.key = e.key;
+
+}

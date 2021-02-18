@@ -8,7 +8,9 @@ screenshot
   
 - HTML/CSS
 - JS
-
+### Image/Media Sources
+[Monitor](http://pixelartmaker.com/art/41b2a43bc42c6cb)
+[Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P)
 ### Get Started:
 
 Using the arrow keys, navigate the junior dev and try to squash as many bugs as possible before you accidentally cause a stack overflow
@@ -17,25 +19,36 @@ Using the arrow keys, navigate the junior dev and try to squash as many bugs as 
 ### Next  steps:
 
 - Light cycle mode (2 player w/ cpu)
-- Redo the whole thing with canvas so its nice and smooooooth
+- socket.io full stack edition for live multiplayer
 
 ### PREP:
 
-[wireframe](#)
+[wireframe](https://www.figma.com/file/1jR9NQOWTfbudiV0tCipDa/Untitled?node-id=0%3A1)
 
 #### pseudocode
 on page load, define environemnt
+classes:
+    gameboard: flexible world size, contains array containging all positions
+    
+    snake: contains array subset of gameboard which is the snake, functions for updating position, direction and checking collision      
+    
+    bugs: array subset of bugs, arrays for creating and destroying bugs
+    
+variables: player score, lives, time count
 
- - visual/data: snake, gameboard, "bugs", lives, score
- - visual: loadscreen, nice logo or something
- - eventlisteners: keydown for player movement, click for reset/stop/pause button
-
+eventlisteners: click, keydown
+    - click: start game
+    - keydown: determine player direction
+    
 wait for player input to start game, begin main loop
-
- - control snake direction thru keyboard eventlistener
- - populate map with "bugs"
- - look for collisions with wall or "bugs"
-
-as player collects bugs, increase length of snake + increase score
-if player collides with wall, subtract 1 life and reset snake position
-if player runs out of lives, store highscore with 3 char username and take player back to title screen
+render loop:
+    increment real-time time counter
+    update player direction
+    update player position
+    check for collisions
+        if collision with bug, create a new bug and increase snake length
+        if collision with self, subtract one life and reset snake position
+            while maintaining length/score
+                if it was players last life, end game and bring back to title screen
+        if player is at edge, loop to other side
+    dom manipulation - draw board
