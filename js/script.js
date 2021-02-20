@@ -174,8 +174,8 @@ class Bug {
     this.createBug();
   }
 }
-
-let gameBoard = new GameBoard(40, 30);
+let boardDimensions = [40,30];
+let gameBoard = new GameBoard(boardDimensions[0], boardDimensions[1]);
 let snake = new Snake(1, gameBoard);
 let initialBugs = 5;
 let bug = new Bug(initialBugs, gameBoard.posArr, snake.arr);
@@ -197,7 +197,6 @@ function globalInit() {
   }
 }
 globalInit();
-localStorage.setItem("snakeByteHS", 0);
 function render() {
   //scorekeeping
 
@@ -221,18 +220,20 @@ function render() {
       updateOverlayString += "PRESS RESET TO PLAY AGAIN!";
       overlay.children[1].innerHTML = updateOverlayString;
       overlay.children[2].innerHTML = "RESET";
-      gameBoard = new GameBoard(40, 30);
+      gameBoard = new GameBoard(boardDimensions[0], boardDimensions[1]);
       tail = [];
     } else {
       overlay.children[0].innerHTML = "<h1>-1 LIFE</h1>";
       updateOverlayString = "PRESS CONTINUE TO KEEP GOING";
       overlay.children[1].innerHTML = updateOverlayString;
       overlay.children[2].innerHTML = "CONTINUE";
+      gameBoard.newSpeed = gameBoard.gameSpeed;
     }
     overlay.style.display = "flex";
     clearInterval(interval);
 
     snake.arr.forEach((val) => ([val[0], val[3]] = [undefined, undefined]));
+    bug.bugArr.forEach(val=>([val[0], val[3]] = [undefined, undefined]));
     snake = new Snake(1, gameBoard, tail);
     bug = new Bug(initialBugs, gameBoard.posArr, snake.arr);
   } else if (isCollision === -1) {

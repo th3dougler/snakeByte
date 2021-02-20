@@ -51,6 +51,7 @@ td {
 }
 
 #overlay {
+  user-select: none;
   font-size: 30px;
   display: flex;
   position: absolute;
@@ -62,6 +63,8 @@ td {
   animation-iteration-count: infinite;
 }
 #scoreKeeper {
+  user-select: none;
+
   border: 8px solid black;
   padding: 10px;
 }
