@@ -176,7 +176,7 @@ class Bug {
 }
 let boardDimensions = [40,30];
 let gameBoard = new GameBoard(boardDimensions[0], boardDimensions[1]);
-let snake = new Snake(1, gameBoard);
+let snake = new Snake(6, gameBoard);
 let initialBugs = 5;
 let bug = new Bug(initialBugs, gameBoard.posArr, snake.arr);
 let overlay = null;
@@ -212,14 +212,18 @@ function render() {
     gameBoard.gameLives--;
     gameBoard.newSpeed = gameBoard.gameSpeed;
     if (gameBoard.gameLives <= 0) {
-      overlay.children[0].innerHTML = "<h1>YOU LOSE >.<</h1>";
+      overlay.children[0].innerHTML = "<h1>GAME OVER</h1>";
+      updateOverlayString = ">.< </br> PRESS RESET TO PLAY AGAIN!";
+      overlay.style.animationName = "red-flash-in";
       if (localStorage.getItem("snakeByteHS") < localHighscore) {
-        updateOverlayString = "NEW HIGH SCORE: " + localHighscore + "</br>";
+        
+        updateOverlayString = "NEW HIGH SCORE: " + localHighscore + "</br>" + updateOverlayString;
+        overlay.style.animationName = "green-flash-in";
         localStorage.setItem("snakeByteHS", localHighscore);
       }
-      updateOverlayString += "PRESS RESET TO PLAY AGAIN!";
       overlay.children[1].innerHTML = updateOverlayString;
       overlay.children[2].innerHTML = "RESET";
+      
       gameBoard = new GameBoard(boardDimensions[0], boardDimensions[1]);
       tail = [];
     } else {
@@ -227,6 +231,7 @@ function render() {
       updateOverlayString = "PRESS CONTINUE TO KEEP GOING";
       overlay.children[1].innerHTML = updateOverlayString;
       overlay.children[2].innerHTML = "CONTINUE";
+      overlay.style.animationName = "red-flash-in";
       gameBoard.newSpeed = gameBoard.gameSpeed;
     }
     overlay.style.display = "flex";
@@ -240,7 +245,7 @@ function render() {
     gameBoard.gamePoints++;
 
     if (gameBoard.gamePoints % 5 === 0) {
-      gameBoard.newSpeed = (gameBoard.newSpeed >= 40)? gameBoard.newSpeed-20: 40;
+      gameBoard.newSpeed = (gameBoard.newSpeed > 40)? gameBoard.newSpeed-20: 40;
       clearInterval(interval);
       interval = setInterval(render, gameBoard.newSpeed);
     }
@@ -295,6 +300,11 @@ function onClick(e) {
     interval = setInterval(render, gameBoard.gameSpeed);
     overlay.style.display = "none";
   }
+  else if (e.target.id === "hacks") {
+    localStorage.setItem("snakeByteHS",0);
+    localHighscore = 0;
+  }
+  
 }
 function onKeydown(e) {
   gameBoard.key = e.key;

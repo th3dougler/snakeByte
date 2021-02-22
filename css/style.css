@@ -3,8 +3,8 @@
   src: url("../res/PressStart2P-Regular.ttf") format("truetype");
 }
 * {
-  box-sizing: border-box;
   font-family: pressStart2P;
+  box-sizing: border-box;
 }
 button {
   background-color: rgba(255, 255, 255, 0);
@@ -24,23 +24,15 @@ button:active {
   transform: scale(0.99);
 }
 body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 #gameWindow {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content:center;
 }
 table {
   user-select: none;
   cursor: none;
-  background-color: rgba(0,0,0, 0.3);
-  width:800px;
-  height: 600px;
-   margin: 40px 0;
+  background-color: rgba(50, 155, 55, 0.7);
   border: 10px solid black;
   border-spacing: 0;
 }
@@ -56,28 +48,61 @@ td {
   display: flex;
   position: absolute;
   flex-direction: column;
-  justify-content: center;
-  padding: 90px;
-  animation-name: bgAni;
-  animation-duration: 4s;
-  animation-iteration-count: infinite;
+  justify-content:space-around;
+  text-align: center;
+  width: 1220px;
+  height: 620px;
+  border: 10px solid black;
+  background-color: rgba(255, 255, 255, 0.7);
+  animation-fill-mode:forwards;
+  animation-duration: .75s;
+  animation-iteration-count: 1;
+
 }
+#overlay p{
+  line-height: 2;
+}
+
 #scoreKeeper {
   user-select: none;
-
+  max-width: 400px;
+  width:400px;
   border: 8px solid black;
   padding: 10px;
 }
-@keyframes bgAni {
+@keyframes green-flash-in {
   0% {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+  25% {
+    background-color: rgba(31, 255, 0, 0.8);
   }
   50% {
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgb(30, 255, 0,0.3);
+  }
+  75% {
+    background-color: rgb(30, 255,0,0.8);
   }
   100% {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgb(30, 255, 0,0.3);
   }
+}
+@keyframes red-flash-in {
+  0% {
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+  25% {
+    background-color: rgba(255, 0, 0, 0.8);
+  }
+  50% {
+    background-color: rgba(255, 0, 0, 0.3);
+  }
+  75% {
+    background-color: rgba(255, 0, 0, 0.8);
+  }
+  100% {
+    background-color: rgba(255, 0, 0, 0.3);
+  } 
 }
 
 /* ingame values */
@@ -176,9 +201,4 @@ td[id]{
   100% {
     background-position: -60px 0;
   }
-}
-
-
-#blank {
-  background: rgba(255, 255, 255, 0);
 }
