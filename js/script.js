@@ -1,14 +1,24 @@
+/* @class GameBoard contains all relevant location info, keyboard info, player lives, and timing */
 class GameBoard {
+  /**
+   * @param  {} width
+   * @param  {} height    Dimensions of game board
+   * @param  {} gameLives  Player lives, 3 by default
+   */
   constructor(width, height, gameLives = 3) {
     this.width = width;
     this.height = height;
+
+    //array of all positions of all objects
     this.posArr = [];
-    this.key = "";
+    this.key = ""; //current key being pressed in DOM
     this.gameTimer = 0;
     this.gameLives = gameLives;
-    this.gameSpeed = 200;
+    this.gameSpeed = 200; //interval rate, default: 200ms
     this.newSpeed = this.gameSpeed;
     this.gamePoints = 0;
+
+    //the initialization of posArr with zero values
     for (let i = 0; i < this.height; i++) {
       for (let j = 0; j < this.width; j++) {
         this.posArr.push({
@@ -20,6 +30,10 @@ class GameBoard {
       }
     }
   }
+  /**initTable: creates a dom element Table the size of the gameboard and appends
+   * it to the argument object
+   * @param  {object} parentElement DOM element to append the initialized table to
+   */
   initTable(parentElement) {
     let table = document.createElement("table");
     table.id = "game-table";
@@ -36,12 +50,21 @@ class GameBoard {
     parentElement.appendChild(table);
     return domArr;
   }
+  /** take 2d array coordinates and convert into 1d representation
+   * @param  {} i row
+   * @param  {} j index
+   */
   pos(i, j) {
     return this.width * i + j;
   }
 }
 
 class Snake {
+  /**create a new snake on argument gameBoard
+   * @param  {} initialLength  initial snake length, generate random bugs to be a part
+   * @param  {} gameBoard  passed gameboard is where the snake will be attached
+   * @param  {} previousTail=[]  If this is passes, it means the player has lost a life and this array of objects needs to be put into the start position
+   */
   constructor(initialLength, gameBoard, previousTail = []) {
     this.gameBoard = gameBoard;
     this.arr = [];
@@ -174,9 +197,9 @@ class Bug {
     this.createBug();
   }
 }
-let boardDimensions = [40,30];
+let boardDimensions = [40, 30];
 let gameBoard = new GameBoard(boardDimensions[0], boardDimensions[1]);
-let snake = new Snake(6, gameBoard);
+let snake = new Snake(1, gameBoard);
 let initialBugs = 5;
 let bug = new Bug(initialBugs, gameBoard.posArr, snake.arr);
 let overlay = null;
@@ -213,24 +236,24 @@ function render() {
     gameBoard.newSpeed = gameBoard.gameSpeed;
     if (gameBoard.gameLives <= 0) {
       overlay.children[0].innerHTML = "<h1>GAME OVER</h1>";
-      updateOverlayString = ">.< </br> PRESS RESET TO PLAY AGAIN!";
+      updateOverlayString = "PRESS RESET TO PLAY AGAIN!";
       overlay.style.animationName = "red-flash-in";
       if (localStorage.getItem("snakeByteHS") < localHighscore) {
-        
-        updateOverlayString = "NEW HIGH SCORE: " + localHighscore + "</br>" + updateOverlayString;
+        updateOverlayString =
+          "NEW HIGH SCORE: " + localHighscore + "</br>" + updateOverlayString;
         overlay.style.animationName = "green-flash-in";
         localStorage.setItem("snakeByteHS", localHighscore);
       }
       overlay.children[1].innerHTML = updateOverlayString;
-      overlay.children[2].innerHTML = "RESET";
-      
+      overlay.children[2].innerHTML = "RESET / [ SPACE ]";
+
       gameBoard = new GameBoard(boardDimensions[0], boardDimensions[1]);
       tail = [];
     } else {
       overlay.children[0].innerHTML = "<h1>-1 LIFE</h1>";
       updateOverlayString = "PRESS CONTINUE TO KEEP GOING";
       overlay.children[1].innerHTML = updateOverlayString;
-      overlay.children[2].innerHTML = "CONTINUE";
+      overlay.children[2].innerHTML = "CONTINUE / [ SPACE ]";
       overlay.style.animationName = "red-flash-in";
       gameBoard.newSpeed = gameBoard.gameSpeed;
     }
@@ -238,14 +261,15 @@ function render() {
     clearInterval(interval);
 
     snake.arr.forEach((val) => ([val[0], val[3]] = [undefined, undefined]));
-    bug.bugArr.forEach(val=>([val[0], val[3]] = [undefined, undefined]));
+    bug.bugArr.forEach((val) => ([val[0], val[3]] = [undefined, undefined]));
     snake = new Snake(1, gameBoard, tail);
     bug = new Bug(initialBugs, gameBoard.posArr, snake.arr);
   } else if (isCollision === -1) {
     gameBoard.gamePoints++;
 
     if (gameBoard.gamePoints % 5 === 0) {
-      gameBoard.newSpeed = (gameBoard.newSpeed > 40)? gameBoard.newSpeed-20: 40;
+      gameBoard.newSpeed =
+        gameBoard.newSpeed > 40 ? gameBoard.newSpeed - 20 : 40;
       clearInterval(interval);
       interval = setInterval(render, gameBoard.newSpeed);
     }
@@ -299,17 +323,19 @@ function onClick(e) {
   if (e.target.id === "start") {
     interval = setInterval(render, gameBoard.gameSpeed);
     overlay.style.display = "none";
-  }
-  else if (e.target.id === "hacks") {
-    localStorage.setItem("snakeByteHS",0);
+  } else if (e.target === scoreWindow.children[1]) {
+    cheatMode += cheatMode < 6 ? 1 : 0;
+    if (cheatMode == 5) {
+      document.getElementById("cheatmode").style.display = "flex";
+    }
     localHighscore = 0;
   }
-  
 }
 function onKeydown(e) {
   gameBoard.key = e.key;
-  if(e.keyCode === 32 && overlay.style.display != "none"){
+  if (e.keyCode === 32 && overlay.style.display != "none") {
     interval = setInterval(render, gameBoard.gameSpeed);
     overlay.style.display = "none";
   }
 }
+let cheatMode = 0;
