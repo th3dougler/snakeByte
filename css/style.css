@@ -10,6 +10,8 @@ button {
   background-color: rgba(255, 255, 255, 0);
   border: 5px solid black;
   padding: 10px;
+  text-shadow: 0 0 10px white;
+
 }
 button:hover,
 button:focus {
@@ -19,11 +21,8 @@ button:focus {
   outline: 1px solid rgba(255, 255, 255, 1);
   outline-offset: -4px;
 }
-justify-content: center;
 button:active {
   transform: scale(0.99);
-}
-body {
 }
 #gameWindow {
   display: flex;
@@ -44,7 +43,6 @@ td {
 
 #overlay {
   user-select: none;
-  font-size: 30px;
   display: flex;
   position: absolute;
   flex-direction: column;
@@ -57,7 +55,7 @@ td {
   animation-fill-mode:forwards;
   animation-duration: .75s;
   animation-iteration-count: 1;
-
+  text-shadow: 0 0 10px white;
 }
 #overlay p{
   line-height: 2;
@@ -78,13 +76,13 @@ td {
     background-color: rgba(31, 255, 0, 0.8);
   }
   50% {
-    background-color: rgb(30, 255, 0,0.3);
+    background-color: rgb(30, 255, 0,0.5);
   }
   75% {
     background-color: rgb(30, 255,0,0.8);
   }
   100% {
-    background-color: rgb(30, 255, 0,0.3);
+    background-color: rgb(30, 255, 0,0.5);
   }
 }
 @keyframes red-flash-in {
@@ -95,14 +93,30 @@ td {
     background-color: rgba(255, 0, 0, 0.8);
   }
   50% {
-    background-color: rgba(255, 0, 0, 0.3);
+    background-color: rgba(255, 0, 0, 0.5);
   }
   75% {
     background-color: rgba(255, 0, 0, 0.8);
   }
   100% {
-    background-color: rgba(255, 0, 0, 0.3);
+    background-color: rgba(255, 0, 0, 0.5);
   } 
+}
+/* credits */
+#credit{
+  position: fixed;
+  bottom: 15px;
+  text-align: center;
+}
+#credit a{
+  border: 5px solid black;
+  padding: 10px;
+  margin: 15px;
+  text-decoration: none;
+  color: black;
+}
+#credit a:hover{
+  background-color: rgba(50, 155, 55, 0.7);
 }
 
 /* ingame values */

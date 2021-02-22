@@ -1,26 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/style.css" />
 
     <title>snakeByte</title>
-</head>
-<body>
+  </head>
+  <body>
     <script defer src="js/script.js"></script>
-    <div id="gameWindow"> 
-        <div id="scoreKeeper"><p>SCORE: 0 LIVES: 3</p><p>LOCAL HIGH SCORE:</p></div>
-        <div id="overlay">
-            <h1>SNAKEBYTE v.0.1</h1>
-            <p>USE ARROW KEYS TO MOVE THE JR DEV </br> COLLECT BUGS AND TRY NOT TO TRIP OVER YOUR STACK!</p>
-            <button id=start>START / [ SPACE ]</button>
-        </div>
+    <div id="gameWindow">
+      <div id="scoreKeeper">
+        <p>SCORE: 0 LIVES: 3</p>
+        <p>LOCAL HIGH SCORE:</p>
+        <p>
+          VOLUME:
+          <input type="range" min="0" max="10" value="5" id="volumeSlider" />
+        </p>
+      </div>
+      <!-- Use overlay for all aspects of game menu,
+        start screen, lose a life screen, win + lose
+    change DOM innerHTML to represent states -->
+      <div id="overlay">
+        <h1>SNAKEBYTE v.0.1</h1>
+        <p>
+          USE ARROW KEYS TO MOVE THE JR DEV, COLLECT BUGS AND TRY NOT TO TRIP
+          OVER YOUR STACK!
+        </p>
+        <button id="start">START / [ SPACE ]</button>
+        <p>
+          <input type="checkbox" id="musicToggle" name="musicToggle" checked />
+          <label for="musicToggle" style="font-size: small">PLAY MUSIC?</label>
+        </p>
+      </div>
     </div>
-    <div id="cheatmode" style="display: none;">
-        <button id="resetHS">resetHS</button>
+    <div id="credit">
+        <a href="https://jefftheworld.com" target="_blank">MUSIC: jefftheworld</a>
+        <a href="https://limezu.itch.io/moderninteriorslimeZu" target="_blank">SPRITES: LimeZu - Modern Interiors </a>
+        <a href="https://github.com/th3dougler" target="_blank">CODE: th3dougler</a>
     </div>
-
-</body>
+  </body>
 </html>

@@ -1,4 +1,4 @@
-/* @class GameBoard contains all relevant location info, keyboard info, player lives, and timing */
+/* GameBoard contains all relevant location info, keyboard info, player lives*/
 class GameBoard {
   /**
    * @param  {} width
@@ -58,7 +58,7 @@ class GameBoard {
     return this.width * i + j;
   }
 }
-
+/* Snake contains all variables and functions related to position and collision of the snake on GameBoard */
 class Snake {
   /**create a new snake on argument gameBoard
    * @param  {} initialLength  initial snake length, generate random bugs to be a part
@@ -68,9 +68,11 @@ class Snake {
   constructor(initialLength, gameBoard, previousTail = []) {
     this.gameBoard = gameBoard;
     this.arr = [];
-    this.speed = 1;
     this.currentDirection = "ArrowRight";
-    this.grow = 0;
+    this.grow = 0; //any value > 0 will cause the tail to grow by that many units
+    /* determine if we're creating a new snake or if the player just lost a life
+      if the snake is new, randomly generate the tail, otherwise used the previousTail parameter to build the tail
+    */
     let length =
       previousTail.length > initialLength ? previousTail.length : initialLength;
     for (let i = 0; i < length; i++) {
@@ -81,9 +83,12 @@ class Snake {
       this.arr.push(newNode);
     }
   }
+  //Called when player loses a life, returns the current tail icon values
   getTail() {
     return this.arr.map((val) => val[3]);
   }
+  /* Called on render(), update the snakes direction based on keyboard input
+  ensure the snake cannot backtrack on its own path */
   updateDirection() {
     if (this.gameBoard.key === "ArrowUp") {
       if (this.currentDirection !== "ArrowDown") {
@@ -103,6 +108,10 @@ class Snake {
       }
     }
   }
+  /* Called on render() this function moves the snake by creating a new head
+  shifting all of the icon values over 1 space.
+  
+  Remove the tail unless a collision has caused snake.grow > 1, then let the tail grow*/
   updatePosition() {
     //set new head based on direction
     let oldHead = this.arr[this.arr.length - 1];
@@ -110,28 +119,27 @@ class Snake {
     let pos = 0,
       spriteDirection = 0;
     let newHead = {};
+    //logic for directional changes, check for wall collision to allow it to pass thru walls
     switch (this.currentDirection) {
       case "ArrowUp":
-        if (oldHead[1] !== 0)
-          pos = gameBoard.pos(oldHead[1] - this.speed, oldHead[2]);
+        if (oldHead[1] !== 0) pos = gameBoard.pos(oldHead[1] - 1, oldHead[2]);
         else pos = gameBoard.pos(gameBoard.height - 1, oldHead[2]);
         spriteDirection = 10;
         break;
       case "ArrowDown":
         if (oldHead[1] !== gameBoard.height - 1)
-          pos = gameBoard.pos(oldHead[1] + this.speed, oldHead[2]);
+          pos = gameBoard.pos(oldHead[1] + 1, oldHead[2]);
         else pos = gameBoard.pos(0, oldHead[2]);
         spriteDirection = 12;
         break;
       case "ArrowLeft":
-        if (oldHead[2] !== 0)
-          pos = gameBoard.pos(oldHead[1], oldHead[2] - this.speed);
+        if (oldHead[2] !== 0) pos = gameBoard.pos(oldHead[1], oldHead[2] - 1);
         else pos = gameBoard.pos(oldHead[1], gameBoard.width - 1);
         spriteDirection = 11;
         break;
       case "ArrowRight":
         if (oldHead[2] !== gameBoard.width - 1)
-          pos = gameBoard.pos(oldHead[1], oldHead[2] + this.speed);
+          pos = gameBoard.pos(oldHead[1], oldHead[2] + 1);
         else pos = gameBoard.pos(oldHead[1], 0);
         spriteDirection = 13;
         break;
@@ -154,6 +162,12 @@ class Snake {
     });
     this.arr.push(newHead);
   }
+  /* if the head object is equal to any other part of the snake, it has collided with itself
+    return codes indicate type of collision:
+    return: 0 - no collision
+            1 - collision with self
+            -1 - collision with bug 
+  */
   checkCollision() {
     let head = this.arr[this.arr.length - 1];
     let idx = this.arr.indexOf(head);
@@ -172,15 +186,22 @@ class Snake {
   }
 }
 
+/* Position of all bugs on GameBoard */
 class Bug {
+  /**
+   * @param  {number} initialBugs how many bugs to start off on gameboard
+   * @param  {obj arr} gameArr array of all positions passed from GameBoard
+   * @param  {obj arr} snakeArr arry of objects which are the snake
+   */
   constructor(initialBugs, gameArr, snakeArr) {
     this.gameArr = gameArr;
     this.snakeArr = snakeArr;
-    this.bugArr = [];
+    this.bugArr = []; //array of objects representing position of bugs on GameBoard
     for (let i = 0; i < initialBugs; i++) {
       this.createBug();
     }
   }
+  /* find a free space on the board, generate a random bug, add it to the array of bugs*/
   createBug() {
     let freeSpace = this.gameArr.filter((val) => val[0] === undefined);
     let randomSpace = Math.floor(Math.random() * freeSpace.length);
@@ -190,6 +211,9 @@ class Bug {
 
     this.bugArr.push(freeSpace[randomSpace]);
   }
+  /** Called by snake.checkCollision(), removes bug from array
+   * @param  {object} affectedBug the bug to be removed
+   */
   onCollision(affectedBug) {
     let idx = this.bugArr.findIndex((val) => val === affectedBug);
     this.bugArr.splice(idx, 1);
@@ -197,32 +221,55 @@ class Bug {
     this.createBug();
   }
 }
+
+/* Global Declarations */
 let boardDimensions = [40, 30];
 let gameBoard = new GameBoard(boardDimensions[0], boardDimensions[1]);
 let snake = new Snake(1, gameBoard);
 let initialBugs = 5;
 let bug = new Bug(initialBugs, gameBoard.posArr, snake.arr);
+let bgAudio = new Audio("./res/10 - whaa.mp3");
+
+/* global DOM Object delaration */
+let volumeSlider = null;
+let bgAudioToggle = null;
 let overlay = null;
-let boardDOM = null;
 let gameWindow = null;
+let gameBoardDOM = null;
 let scoreWindow = null;
+
+/* misc game variables */
 let localHighscore = localStorage.getItem("snakeByteHS");
 let interval = null;
+
 function globalInit() {
+  //DOM
   gameWindow = document.getElementById("gameWindow");
   overlay = document.getElementById("overlay");
   scoreWindow = document.getElementById("scoreKeeper");
+  bgAudioToggle = document.getElementById("musicToggle");
+  volumeSlider = document.getElementById("volumeSlider");
+  bgAudio.volume = volumeSlider.value/10;
+  //EventListeners
   gameWindow.addEventListener("click", onClick);
   document.addEventListener("keydown", onKeydown);
-  boardDOM = gameBoard.initTable(gameWindow);
+
+  gameBoardDOM = gameBoard.initTable(gameWindow); //draw table into document DOM
+
+  //Check if a local highscore has been set, if not, use default 0 value
   if (localHighscore > 0) {
     scoreWindow.children[1].innerHTML = "LOCAL HIGH SCORE: " + localHighscore;
   }
 }
 globalInit();
-function render() {
-  //scorekeeping
 
+/**Called by setInterval in onClick();
+ *  * Calls functions to update snake position
+ *  * logic to handle various collision scenarios
+ *  * track score, update lives
+ *  * DOM Manipulation
+ */
+function render() {
   gameBoard.gameTimer += gameBoard.gameSpeed / 1000;
 
   snake.updateDirection();
@@ -231,14 +278,22 @@ function render() {
   let updateOverlayString = "";
   let tail = snake.getTail();
   let isCollision = snake.checkCollision();
+  //isCollision represents various collision situations
+  // 1 = collide with self
+  //-1 = collision with a bug
+  // 0 = no collision
   if (isCollision == 1) {
+    //when player collides with itself, reset the speed to game default and subtract a life
     gameBoard.gameLives--;
     gameBoard.newSpeed = gameBoard.gameSpeed;
+    //Conditions for losing and winning the game occur when player has lost all lives
+    //Win if they set a new highscore, lose otherwise.  Update local storage to reflect this
     if (gameBoard.gameLives <= 0) {
       overlay.children[0].innerHTML = "<h1>GAME OVER</h1>";
       updateOverlayString = "PRESS RESET TO PLAY AGAIN!";
       overlay.style.animationName = "red-flash-in";
       if (localStorage.getItem("snakeByteHS") < localHighscore) {
+        overlay.children[0].innerHTML = "<h1>CONGRATULATIONS<h1>";
         updateOverlayString =
           "NEW HIGH SCORE: " + localHighscore + "</br>" + updateOverlayString;
         overlay.style.animationName = "green-flash-in";
@@ -257,14 +312,18 @@ function render() {
       overlay.style.animationName = "red-flash-in";
       gameBoard.newSpeed = gameBoard.gameSpeed;
     }
+    //when player loses a life, bring up the game overlay and wait for input to resume game
     overlay.style.display = "flex";
     clearInterval(interval);
-
+    //when starting the game again, place snake back at default location
+    //reset the bugs and start with default values again
     snake.arr.forEach((val) => ([val[0], val[3]] = [undefined, undefined]));
     bug.bugArr.forEach((val) => ([val[0], val[3]] = [undefined, undefined]));
     snake = new Snake(1, gameBoard, tail);
     bug = new Bug(initialBugs, gameBoard.posArr, snake.arr);
   } else if (isCollision === -1) {
+    //when player collides with a bug, increase the score
+    //every 5 bugs, increase the speed by 10% of the default, up to a reasonable level
     gameBoard.gamePoints++;
 
     if (gameBoard.gamePoints % 5 === 0) {
@@ -276,36 +335,53 @@ function render() {
   }
 
   scoreUpdate();
+
+  //Music playback code: check to ensure player wants music and game is in play
+  if (
+    bgAudioToggle.checked === true &&
+    overlay.style.display === "none" &&
+    bgAudio.readyState == 4
+  ) {
+    bgAudio.play();
+  } else bgAudio.pause();
+  /* Draw the gameboard
+  iconvalues:
+  2 - 4 : bugs 1 - 3
+  1: snake
+  10: snake up
+  12: snake down
+  11: snake right
+  13: snake left
+  
+  */
   gameBoard.posArr.forEach((val, idx) => {
-    if (val[0] == -1) {
-      boardDOM[idx].id = "snake-body";
-      boardDOM[idx].className = "";
-    } else if (val[0] >= 10) {
-      boardDOM[idx].id = "snake-head";
+    if (val[0] >= 10) {
+      gameBoardDOM[idx].id = "snake-head";
       if (val[0] === 10) {
-        boardDOM[idx].className = "pUp";
+        gameBoardDOM[idx].className = "pUp";
       } else if (val[0] === 12) {
-        boardDOM[idx].className = "pDown";
+        gameBoardDOM[idx].className = "pDown";
       } else if (val[0] === 11) {
-        boardDOM[idx].className = "pLeft";
+        gameBoardDOM[idx].className = "pLeft";
       } else if (val[0] === 13) {
-        boardDOM[idx].className = "pRight";
+        gameBoardDOM[idx].className = "pRight";
       }
     } else if (val[0] == 2) {
-      boardDOM[idx].id = "bug-1";
-      boardDOM[idx].className = "";
+      gameBoardDOM[idx].id = "bug-1";
+      gameBoardDOM[idx].className = "";
     } else if (val[0] == 3) {
-      boardDOM[idx].id = "bug-2";
-      boardDOM[idx].className = "";
+      gameBoardDOM[idx].id = "bug-2";
+      gameBoardDOM[idx].className = "";
     } else if (val[0] == 4) {
-      boardDOM[idx].id = "bug-3";
-      boardDOM[idx].className = "";
+      gameBoardDOM[idx].id = "bug-3";
+      gameBoardDOM[idx].className = "";
     } else {
-      boardDOM[idx].id = undefined;
-      boardDOM[idx].className = "";
+      gameBoardDOM[idx].id = undefined;
+      gameBoardDOM[idx].className = "";
     }
   });
 }
+/* Called by render() function to update the score window */
 function scoreUpdate() {
   localHighscore =
     gameBoard.gamePoints > localHighscore
@@ -318,19 +394,31 @@ function scoreUpdate() {
     gameBoard.gameLives;
   scoreWindow.children[1].innerHTML = "LOCAL HIGH SCORE: " + localHighscore;
 }
-
+/** click handler function
+ * @param  {event} e returns where the click event took place
+ */
 function onClick(e) {
+  //if player is clicking on the button, get back into the game
+  //and resume the music
+  //this applies at game start as well as between lives and on game end
+  // secret menu:  reset localstorage if user clicks on LOCAL HIGH SCORE 9 times
   if (e.target.id === "start") {
     interval = setInterval(render, gameBoard.gameSpeed);
     overlay.style.display = "none";
   } else if (e.target === scoreWindow.children[1]) {
-    cheatMode += cheatMode < 6 ? 1 : 0;
-    if (cheatMode == 5) {
-      document.getElementById("cheatmode").style.display = "flex";
+    cheatMode += cheatMode < 10 ? 1 : 0;
+    if (cheatMode == 9) {
+      localHighscore = 0;
+      localStorage.setItem("snakeByteHS", 0);
+      scoreUpdate();
     }
-    localHighscore = 0;
   }
 }
+/** keydown handler function
+ * @param  {event} e returns keyboard event
+    GameBoard keeps a reference of what key has been pressed, which is checked in the render function 
+ */
+
 function onKeydown(e) {
   gameBoard.key = e.key;
   if (e.keyCode === 32 && overlay.style.display != "none") {
@@ -338,4 +426,8 @@ function onKeydown(e) {
     overlay.style.display = "none";
   }
 }
-let cheatMode = 0;
+
+volumeSlider.oninput = function(){
+  bgAudio.volume = volumeSlider.value / 10;
+}
+let cheatMode = 0; //SHH!
