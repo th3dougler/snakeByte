@@ -7,7 +7,6 @@
   box-sizing: border-box;
 }
 html{
-  
   overflow: hidden;
 }
 body{
@@ -27,7 +26,8 @@ button {
   border: 5px solid #e6d5b8;
   color: #e6d5b8;
   padding: 10px;
-  text-shadow: 0 0 10px #e6d5b8;
+  text-shadow: 0 0 10px rgb(0, 0, 0);
+  box-shadow: 0 0 10px rgb(0, 0, 0);
 
 }
 button:hover,
@@ -47,6 +47,7 @@ button:active {
   flex-direction: column;
   justify-content:center;
   align-items: center;
+  transform-origin: 50% 0;
 }
 table {
   user-select: none;
@@ -73,8 +74,8 @@ td {
   flex-direction: column;
   justify-content:space-around;
   text-align: center;
-  top: 0;
   width: 430px;
+  top: 10px;
   height: 520px;
   padding: 10px;
   border: 5px solid rgba(0, 0, 0, 0);
