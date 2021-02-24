@@ -1,8 +1,15 @@
 # snakeByte
-#### Based on the 1976 arcade hit, Blockade:  Our intrepid jr dev seeks to squash bugs and leave their code looking dry and easily understood.  (Its a snake game)
+ Based on the 1976 arcade hit, Blockade:  Our intrepid jr dev seeks to squash bugs and leave their code looking dry and easily understood.  (Its a snake game)
 
-<blockquote class="imgur-embed-pub" lang="en" data-id="a/D2sV0Fh" data-context="false" ><a href="//imgur.com/a/D2sV0Fh"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+[![screenshot1](https://i.imgur.com/CPf2Y3Cm.png)](https://imgur.com/CPf2Y3C)
+
+[![screenshot2](https://i.imgur.com/QXrMMLum.png)](https://imgur.com/QXrMMLu)
+
+[![screenshot3](https://i.imgur.com/NP7Immbm.png)](https://imgur.com/NP7Immb)
+
+[![screenshot4](https://i.imgur.com/jEruTTjm.png)](https://imgur.com/jEruTTj)
   
+
 ### Laguages Used
   
 - HTML/CSS
@@ -14,12 +21,12 @@
 
 ### Get Started:
 
-Using the arrow keys, navigate the junior dev and try to squash as many bugs as possible before you accidentally cause a stack overflow
+Using the arrow keys or swipe on touch devices, navigate the junior dev and try to squash as many bugs as possible before you accidentally cause a stack overflow (trip over your own stack)
 [play](th3dougler.github.io/snakeByte)
 
 ### Next  steps:
 
-- Light cycle mode (2 player w/ cpu)
+- Light cycle mode (2 player)
 - socket.io full stack edition for live multiplayer
 
 ### PREP:
