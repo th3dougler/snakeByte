@@ -347,8 +347,7 @@ function render() {
   if (
     bgAudioToggle.checked === true &&
     overlay.style.display === "none" &&
-    bgAudio.readyState == 4
-  ) {
+    bgAudio.readyState == 4){
     bgAudio.play();
   } else bgAudio.pause();
   /* Draw the gameboard
