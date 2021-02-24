@@ -35,6 +35,7 @@ class GameBoard {
    * @param  {object} parentElement DOM element to append the initialized table to
    */
   initTable(parentElement) {
+    
     let table = document.createElement("table");
     table.id = "game-table";
     let domArr = [];
@@ -47,7 +48,8 @@ class GameBoard {
         domArr.push(td);
       }
     }
-    parentElement.appendChild(table);
+    
+    parentElement.prepend(table);
     return domArr;
   }
   /** take 2d array coordinates and convert into 1d representation
@@ -76,7 +78,8 @@ class Snake {
     let length =
       previousTail.length > initialLength ? previousTail.length : initialLength;
     for (let i = 0; i < length; i++) {
-      let newNode = gameBoard.posArr[gameBoard.pos(gameBoard.height / 2, i)];
+      let newNode = gameBoard.posArr[this.gameBoard.pos(Math.floor(this.gameBoard.height / 2), i)];
+  
       let randomBug = Math.floor(Math.random() * 3) + 2;
       newNode[0] = randomBug;
       newNode[3] = randomBug;
@@ -221,9 +224,8 @@ class Bug {
     this.createBug();
   }
 }
-
 /* Global Declarations */
-let boardDimensions = [40, 30];
+let boardDimensions = [21, 25];
 let gameBoard = new GameBoard(boardDimensions[0], boardDimensions[1]);
 let snake = new Snake(1, gameBoard);
 let initialBugs = 5;
@@ -237,6 +239,7 @@ let overlay = null;
 let gameWindow = null;
 let gameBoardDOM = null;
 let scoreWindow = null;
+let touchPad = null;
 
 /* misc game variables */
 let localHighscore = localStorage.getItem("snakeByteHS");
@@ -249,16 +252,21 @@ function globalInit() {
   scoreWindow = document.getElementById("scoreKeeper");
   bgAudioToggle = document.getElementById("musicToggle");
   volumeSlider = document.getElementById("volumeSlider");
+  touchPad = document.getElementById("touchPad");
   bgAudio.volume = volumeSlider.value/10;
   //EventListeners
   gameWindow.addEventListener("click", onClick);
   document.addEventListener("keydown", onKeydown);
-
+  window.addEventListener('touchstart',onTouchstart);
+  window.addEventListener('touchend',onTouchend);
+  
+  
+  
   gameBoardDOM = gameBoard.initTable(gameWindow); //draw table into document DOM
 
   //Check if a local highscore has been set, if not, use default 0 value
   if (localHighscore > 0) {
-    scoreWindow.children[1].innerHTML = "LOCAL HIGH SCORE: " + localHighscore;
+    scoreWindow.children[1].innerHTML = "HIGH SCORE: " + localHighscore;
   }
 }
 globalInit();
@@ -289,11 +297,11 @@ function render() {
     //Conditions for losing and winning the game occur when player has lost all lives
     //Win if they set a new highscore, lose otherwise.  Update local storage to reflect this
     if (gameBoard.gameLives <= 0) {
-      overlay.children[0].innerHTML = "<h1>GAME OVER</h1>";
+      overlay.children[0].innerHTML = "GAME OVER";
       updateOverlayString = "PRESS RESET TO PLAY AGAIN!";
       overlay.style.animationName = "red-flash-in";
       if (localStorage.getItem("snakeByteHS") < localHighscore) {
-        overlay.children[0].innerHTML = "<h1>CONGRATULATIONS<h1>";
+        overlay.children[0].innerHTML = "CONGRATULATIONS";
         updateOverlayString =
           "NEW HIGH SCORE: " + localHighscore + "</br>" + updateOverlayString;
         overlay.style.animationName = "green-flash-in";
@@ -305,7 +313,7 @@ function render() {
       gameBoard = new GameBoard(boardDimensions[0], boardDimensions[1]);
       tail = [];
     } else {
-      overlay.children[0].innerHTML = "<h1>-1 LIFE</h1>";
+      overlay.children[0].innerHTML = "-1 LIFE";
       updateOverlayString = "PRESS CONTINUE TO KEEP GOING";
       overlay.children[1].innerHTML = updateOverlayString;
       overlay.children[2].innerHTML = "CONTINUE / [ SPACE ]";
@@ -390,9 +398,9 @@ function scoreUpdate() {
   scoreWindow.children[0].innerHTML =
     "SCORE: " +
     Math.floor(gameBoard.gamePoints) +
-    " LIVES: " +
+    "</br>LIVES: " +
     gameBoard.gameLives;
-  scoreWindow.children[1].innerHTML = "LOCAL HIGH SCORE: " + localHighscore;
+  scoreWindow.children[1].innerHTML = "HIGH SCORE: " + localHighscore;
 }
 /** click handler function
  * @param  {event} e returns where the click event took place
@@ -401,11 +409,15 @@ function onClick(e) {
   //if player is clicking on the button, get back into the game
   //and resume the music
   //this applies at game start as well as between lives and on game end
-  // secret menu:  reset localstorage if user clicks on LOCAL HIGH SCORE 9 times
-  if (e.target.id === "start") {
+  // secret menu:  reset localstorage if user clicks on HIGH SCORE 9 times
+  let target = e.target;
+  if (target.id === "start") {
     interval = setInterval(render, gameBoard.gameSpeed);
     overlay.style.display = "none";
-  } else if (e.target === scoreWindow.children[1]) {
+  }else if(target.id === "ArrowUp" || target.id === "ArrowDown" || target.id === "ArrowLeft" || target.id === "ArrowRight"){
+    
+    gameBoard.key = target.id;
+  } else if (target === scoreWindow.children[1]) {
     cheatMode += cheatMode < 10 ? 1 : 0;
     if (cheatMode == 9) {
       localHighscore = 0;
@@ -420,13 +432,45 @@ function onClick(e) {
  */
 
 function onKeydown(e) {
-  gameBoard.key = e.key;
-  if (e.keyCode === 32 && overlay.style.display != "none") {
+  let key = e.key;
+  if(key === "ArrowUp" || key === "ArrowDown" || key === "ArrowLeft" || key === "ArrowRight")
+    gameBoard.key = e.key;
+  else if (key === " " && overlay.style.display != "none") {
     interval = setInterval(render, gameBoard.gameSpeed);
     overlay.style.display = "none";
   }
 }
-
+let touchArr = {
+  startX: 0,
+  startY: 0,
+  endX: 0,
+  endY: 0,
+  distX: function(){return this.endX - this.startX},
+  distY: function(){return this.endY - this.startY},
+  getDirection: function(){
+    let dX = this.distX();
+    let dY = this.distY();
+    if(Math.abs(dX) > Math.abs(dY)){
+      return (dX>=0)?"ArrowRight":"ArrowLeft";
+    }
+    else{
+      return (dY>=0)?"ArrowDown":"ArrowUp";
+    }
+  }
+};
+function onTouchstart(e){
+  let touch = e.changedTouches[0];
+  touchArr.startX = touch.pageX;
+  touchArr.startY = touch.pageY;
+  
+}
+function onTouchend(e){
+  let touch = e.changedTouches[0];
+  touchArr.endX = touch.pageX;
+  touchArr.endY = touch.pageY;
+  gameBoard.key = (overlay.style.display  === "none")? touchArr.getDirection(): "ArrowRight";
+  
+}
 volumeSlider.oninput = function(){
   bgAudio.volume = volumeSlider.value / 10;
 }

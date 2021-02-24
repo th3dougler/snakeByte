@@ -11,9 +11,11 @@
   <body>
     <script defer src="js/script.js"></script>
     <div id="gameWindow">
+      <div id="touchPad">
+      </div>
       <div id="scoreKeeper">
-        <p>SCORE: 0 LIVES: 3</p>
-        <p>LOCAL HIGH SCORE:</p>
+        <p>SCORE: 0 </br> LIVES: 3</p>
+        <p>HIGH SCORE:</p>
         <p>
           VOLUME:
           <input type="range" min="0" max="10" value="5" id="volumeSlider" />
@@ -30,15 +32,16 @@
         </p>
         <button id="start">START / [ SPACE ]</button>
         <p>
-          <input type="checkbox" id="musicToggle" name="musicToggle" checked />
+          <input type="checkbox" id="musicToggle" name="musicToggle" />
           <label for="musicToggle" style="font-size: small">PLAY MUSIC?</label>
         </p>
       </div>
-    </div>
-    <div id="credit">
+      <div id="credit">
         <a href="https://jefftheworld.com" target="_blank">MUSIC: jefftheworld</a>
         <a href="https://limezu.itch.io/moderninteriorslimeZu" target="_blank">SPRITES: LimeZu - Modern Interiors </a>
         <a href="https://github.com/th3dougler" target="_blank">CODE: th3dougler</a>
+      </div>
     </div>
+    
   </body>
 </html>
