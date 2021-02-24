@@ -2,11 +2,8 @@
  Based on the 1976 arcade hit, Blockade:  Our intrepid jr dev seeks to squash bugs and leave their code looking dry and easily understood.  (Its a snake game)
 
 [![screenshot1](https://i.imgur.com/CPf2Y3Cm.png)](https://imgur.com/CPf2Y3C)
-
 [![screenshot2](https://i.imgur.com/QXrMMLum.png)](https://imgur.com/QXrMMLu)
-
 [![screenshot3](https://i.imgur.com/NP7Immbm.png)](https://imgur.com/NP7Immb)
-
 [![screenshot4](https://i.imgur.com/jEruTTjm.png)](https://imgur.com/jEruTTj)
   
 
