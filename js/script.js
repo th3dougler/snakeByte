@@ -239,7 +239,6 @@ let overlay = null;
 let gameWindow = null;
 let gameBoardDOM = null;
 let scoreWindow = null;
-let touchPad = null;
 
 /* misc game variables */
 let localHighscore = localStorage.getItem("snakeByteHS");
@@ -252,7 +251,6 @@ function globalInit() {
   scoreWindow = document.getElementById("scoreKeeper");
   bgAudioToggle = document.getElementById("musicToggle");
   volumeSlider = document.getElementById("volumeSlider");
-  touchPad = document.getElementById("touchPad");
   bgAudio.volume = volumeSlider.value/10;
   //EventListeners
   gameWindow.addEventListener("click", onClick);
