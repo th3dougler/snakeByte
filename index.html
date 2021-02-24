@@ -11,30 +11,27 @@
   <body>
     <script defer src="js/script.js"></script>
     <div id="gameWindow">
-      <div id="touchPad">
-      </div>
       <div id="scoreKeeper">
         <p>SCORE: 0 </br> LIVES: 3</p>
         <p>HIGH SCORE:</p>
         <p>
-          VOLUME:
+          <input type="checkbox" id="musicToggle" name="musicToggle" />
+          
+        MUSIC
           <input type="range" min="0" max="10" value="5" id="volumeSlider" />
+        
         </p>
       </div>
       <!-- Use overlay for all aspects of game menu,
         start screen, lose a life screen, win + lose
     change DOM innerHTML to represent states -->
       <div id="overlay">
-        <h1>SNAKEBYTE v.0.1</h1>
+        <h1>SNAKEBYTE v.0.1.2</h1>
         <p>
           USE ARROW KEYS TO MOVE THE JR DEV, COLLECT BUGS AND TRY NOT TO TRIP
           OVER YOUR STACK!
         </p>
         <button id="start">START / [ SPACE ]</button>
-        <p>
-          <input type="checkbox" id="musicToggle" name="musicToggle" />
-          <label for="musicToggle" style="font-size: small">PLAY MUSIC?</label>
-        </p>
       </div>
       <div id="credit">
         <a href="https://jefftheworld.com" target="_blank">MUSIC: jefftheworld</a>

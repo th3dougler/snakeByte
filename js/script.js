@@ -239,7 +239,6 @@ let overlay = null;
 let gameWindow = null;
 let gameBoardDOM = null;
 let scoreWindow = null;
-let touchPad = null;
 
 /* misc game variables */
 let localHighscore = localStorage.getItem("snakeByteHS");
@@ -252,14 +251,13 @@ function globalInit() {
   scoreWindow = document.getElementById("scoreKeeper");
   bgAudioToggle = document.getElementById("musicToggle");
   volumeSlider = document.getElementById("volumeSlider");
-  touchPad = document.getElementById("touchPad");
   bgAudio.volume = volumeSlider.value/10;
   //EventListeners
   gameWindow.addEventListener("click", onClick);
   document.addEventListener("keydown", onKeydown);
   window.addEventListener('touchstart',onTouchstart);
   window.addEventListener('touchend',onTouchend);
-  
+  window.addEventListener('resize', onResize);
   
   
   gameBoardDOM = gameBoard.initTable(gameWindow); //draw table into document DOM
@@ -268,6 +266,7 @@ function globalInit() {
   if (localHighscore > 0) {
     scoreWindow.children[1].innerHTML = "HIGH SCORE: " + localHighscore;
   }
+  onResize();
 }
 globalInit();
 
@@ -473,5 +472,19 @@ function onTouchend(e){
 }
 volumeSlider.oninput = function(){
   bgAudio.volume = volumeSlider.value / 10;
+}
+function onResize(e){
+  let scaleRatio = 0;
+  let gameHeight = gameWindow.offsetHeight;
+  let gameWidth = gameWindow.offsetWidth;
+  
+  let height = window.innerHeight;
+  let width = window.innerWidth;
+  let screenRatio = width/height;
+  let gameRatio = gameWidth / gameHeight;
+  scaleRatio = (( screenRatio) > gameRatio)? height/gameHeight: (0.95*width)/gameWidth;
+  
+  gameWindow.style.transform = "scale("+scaleRatio+")"
+  console.log()
 }
 let cheatMode = 0; //SHH!
