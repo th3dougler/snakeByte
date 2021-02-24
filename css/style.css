@@ -7,7 +7,7 @@
   box-sizing: border-box;
 }
 html{
-  overflow: hidden;
+  overflow:hidden;
 }
 body{
   font-size: 16px;
@@ -85,7 +85,7 @@ td {
   animation-iteration-count: 1;
   text-shadow: 0 0 10px rgb(0, 0, 0);
 }
-#overlay p{
+#overlay > *{
   line-height: 2;
 }
 
@@ -108,6 +108,13 @@ td {
   text-align: center;
   background: #e45826;
   box-shadow: 0 0 10px #e45826;
+}
+#musicToggle:checked ~ #volumeSlider{
+  display: inline;
+}
+#volumeSlider{
+  display: none;
+  width: 50%;
 }
 @keyframes green-flash-in {
   0% {
@@ -149,7 +156,6 @@ td {
   display: flex;
   font-size: 0.5em;
   width: 100%;
-  bottom: 15px;
   text-align: center;
   justify-content: space-between;
   background: #e45826;
@@ -164,6 +170,21 @@ td {
 }
 #credit a:hover{
   background-color: rgba(255, 255, 255, 0.3);
+}
+div#google_translate_element div.goog-te-gadget-simple {
+  border: 3px solid #e6d5b8;
+  background-color: #e45826;
+  
+  /*background-color: #17548d;*/ /*#e3e3ff*/
+}
+#google_translate_element{
+  height: 20px;
+  padding: 5px;
+  margin-bottom: 20px;
+  user-select: none;
+}
+div#google_translate_element div.goog-te-gadget-simple a.goog-te-menu-value span {
+  color: #e6d5b8;
 }
 
 /* ingame values */
