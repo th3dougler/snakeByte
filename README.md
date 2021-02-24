@@ -1,17 +1,7 @@
 # snakeByte
 #### Based on the 1976 arcade hit, Blockade:  Our intrepid jr dev seeks to squash bugs and leave their code looking dry and easily understood.  (Its a snake game)
-![](https://i.imgur.com/TxdzRYt.png)
-https://imgur.com/TxdzRYt
 
-![](https://i.imgur.com/LSFLzsC.png)
-https://imgur.com/LSFLzsC
-
-![](https://i.imgur.com/CFOlpov.png)
-https://imgur.com/CFOlpov
-
-![](https://i.imgur.com/f9NRw6h.png)
-https://imgur.com/f9NRw6h
-screenshot
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/D2sV0Fh" data-context="false" ><a href="//imgur.com/a/D2sV0Fh"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
   
 ### Laguages Used
   
