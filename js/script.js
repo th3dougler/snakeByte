@@ -232,6 +232,7 @@ let initialBugs = 5;
 let bug = new Bug(initialBugs, gameBoard.posArr, snake.arr);
 let bgAudio = new Audio("./res/10 - whaa.mp3");
 
+
 /* global DOM Object delaration */
 let volumeSlider = null;
 let bgAudioToggle = null;
@@ -261,7 +262,8 @@ function globalInit() {
   
   
   gameBoardDOM = gameBoard.initTable(gameWindow); //draw table into document DOM
-
+  bgAudio.load();
+  
   //Check if a local highscore has been set, if not, use default 0 value
   if (localHighscore > 0) {
     scoreWindow.children[1].innerHTML = "HIGH SCORE: " + localHighscore;
