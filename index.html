@@ -12,21 +12,23 @@
     <script defer src="js/script.js"></script>
     <div id="gameWindow">
       <div id="scoreKeeper">
-        <p>SCORE: 0 </br> LIVES: 3</p>
-        <p>HIGH SCORE:</p>
-        <p>
+        <div>SCORE: <span id="score">0</span></div>
+        <div>LIVES: <span id="lives">3</span></div>
+        <div>HIGH SCORE:<span id="highscore">3</span></div>
+        <div id="musicControlContainer">
           <input type="checkbox" id="musicToggle" name="musicToggle" checked/>
+          <span class="checkmark"></span>
           
         MUSIC
           <input type="range" min="0" max="10" value="1" id="volumeSlider" />
         
-        </p>
+        </div>
       </div>
       <!-- Use overlay for all aspects of game menu,
         start screen, lose a life screen, win + lose
     change DOM innerHTML to represent states -->
       <div id="overlay">
-        <h1>SNAKEBYTE v.0.1.2</h1>
+        <h1>SNAKE BYTE v0.1.2</h1>
         <p>
           USE ARROW KEYS TO MOVE THE JR DEV, COLLECT BUGS AND TRY NOT TO TRIP
           OVER YOUR STACK!
@@ -38,7 +40,17 @@
         <a href="https://limezu.itch.io/moderninteriorslimeZu" target="_blank">SPRITES: LimeZu - Modern Interiors </a>
         <a href="https://github.com/th3dougler" target="_blank">CODE: th3dougler</a>
       </div>
+      
+      <div id="google_translate_element"></div>
     </div>
     
+
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+}
+</script>
+
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   </body>
 </html>

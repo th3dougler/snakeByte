@@ -239,7 +239,9 @@ let bgAudioToggle = null;
 let overlay = null;
 let gameWindow = null;
 let gameBoardDOM = null;
-let scoreWindow = null;
+let dispScore = null;
+let dispLives = null;
+let dispHS = null;
 
 /* misc game variables */
 let localHighscore = localStorage.getItem("snakeByteHS");
@@ -249,28 +251,35 @@ function globalInit() {
   //DOM
   gameWindow = document.getElementById("gameWindow");
   overlay = document.getElementById("overlay");
-  scoreWindow = document.getElementById("scoreKeeper");
   bgAudioToggle = document.getElementById("musicToggle");
+  dispScore = document.getElementById("score");
+  dispLives = document.getElementById("lives");
+  dispHS = document.getElementById("highscore");
+  
   volumeSlider = document.getElementById("volumeSlider");
   bgAudio.volume = volumeSlider.value/10;
+  
   //EventListeners
   gameWindow.addEventListener("click", onClick);
   document.addEventListener("keydown", onKeydown);
+  // document.addEventListener("windowready",onResize);
+  
   window.addEventListener('touchstart',onTouchstart);
   window.addEventListener('touchend',onTouchend);
   window.addEventListener('resize', onResize);
-  
+  window.addEventListener("load",onResize)
   
   gameBoardDOM = gameBoard.initTable(gameWindow); //draw table into document DOM
   bgAudio.load();
   
   //Check if a local highscore has been set, if not, use default 0 value
   if (localHighscore > 0) {
-    scoreWindow.children[1].innerHTML = "HIGH SCORE: " + localHighscore;
+    scoreUpdate();
   }
-  onResize();
+  
 }
 globalInit();
+
 
 /**Called by setInterval in onClick();
  *  * Calls functions to update snake position
@@ -302,9 +311,9 @@ function render() {
       updateOverlayString = "PRESS RESET TO PLAY AGAIN!";
       overlay.style.animationName = "red-flash-in";
       if (localStorage.getItem("snakeByteHS") < localHighscore) {
-        overlay.children[0].innerHTML = "CONGRATULATIONS";
+        overlay.children[0].innerHTML = "CONGRATS!";
         updateOverlayString =
-          "NEW HIGH SCORE: " + localHighscore + "</br>" + updateOverlayString;
+          "YOU SET A NEW HIGH SCORE: " + localHighscore + "</br>" + updateOverlayString;
         overlay.style.animationName = "green-flash-in";
         localStorage.setItem("snakeByteHS", localHighscore);
       }
@@ -337,7 +346,7 @@ function render() {
 
     if (gameBoard.gamePoints % 5 === 0) {
       gameBoard.newSpeed =
-        gameBoard.newSpeed > 40 ? gameBoard.newSpeed - 20 : 40;
+        gameBoard.newSpeed > 60 ? gameBoard.newSpeed - 20 : 60;
       clearInterval(interval);
       interval = setInterval(render, gameBoard.newSpeed);
     }
@@ -395,12 +404,9 @@ function scoreUpdate() {
     gameBoard.gamePoints > localHighscore
       ? gameBoard.gamePoints
       : localHighscore;
-  scoreWindow.children[0].innerHTML =
-    "SCORE: " +
-    Math.floor(gameBoard.gamePoints) +
-    "</br>LIVES: " +
-    gameBoard.gameLives;
-  scoreWindow.children[1].innerHTML = "HIGH SCORE: " + localHighscore;
+      dispScore.innerHTML = Math.floor(gameBoard.gamePoints);
+      dispLives.innerHTML = gameBoard.gameLives;
+      dispHS.innerHTML = localHighscore;
 }
 /** click handler function
  * @param  {event} e returns where the click event took place
@@ -417,7 +423,7 @@ function onClick(e) {
   }else if(target.id === "ArrowUp" || target.id === "ArrowDown" || target.id === "ArrowLeft" || target.id === "ArrowRight"){
     
     gameBoard.key = target.id;
-  } else if (target === scoreWindow.children[1]) {
+  } else if (target === dispHS) {
     cheatMode += cheatMode < 10 ? 1 : 0;
     if (cheatMode == 9) {
       localHighscore = 0;
@@ -474,18 +480,19 @@ function onTouchend(e){
 volumeSlider.oninput = function(){
   bgAudio.volume = volumeSlider.value / 10;
 }
-function onResize(e){
+function onResize(){
+  console.log("foo");
   let scaleRatio = 0;
   let gameHeight = gameWindow.offsetHeight;
   let gameWidth = gameWindow.offsetWidth;
   
-  let height = window.innerHeight;
-  let width = window.innerWidth;
+  let height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+  let width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+  console.log(gameHeight, gameWidth);
   let screenRatio = width/height;
   let gameRatio = gameWidth / gameHeight;
   scaleRatio = (( screenRatio) > gameRatio)? height/gameHeight: (0.95*width)/gameWidth;
   
   gameWindow.style.transform = "scale("+scaleRatio+")"
-  console.log()
 }
 let cheatMode = 0; //SHH!
