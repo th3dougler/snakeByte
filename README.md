@@ -1,10 +1,12 @@
 # snakeByte
  Based on the 1976 arcade hit, Blockade:  Our intrepid jr dev seeks to squash bugs and leave their code looking dry and easily understood.  (Its a snake game)
 
-[![screenshot1](https://i.imgur.com/CPf2Y3Cm.png)](https://imgur.com/CPf2Y3C)
-[![screenshot2](https://i.imgur.com/QXrMMLum.png)](https://imgur.com/QXrMMLu)
-[![screenshot3](https://i.imgur.com/NP7Immbm.png)](https://imgur.com/NP7Immb)
-[![screenshot4](https://i.imgur.com/jEruTTjm.png)](https://imgur.com/jEruTTj)
+[![screenshot1](https://i.imgur.com/Dow7qRkm.png)](https://imgur.com/Dow7qRk)
+[![screenshot2](https://i.imgur.com/NvlDdocm.png)](https://imgur.com/NvlDdoc)
+[![screenshot3](https://i.imgur.com/R7rdzjum.png)](https://imgur.com/R7rdzju)
+[![screenshot4](https://i.imgur.com/ceJV5oFm.png)](https://imgur.com/ceJV5oF)
+[![screenshot4](https://i.imgur.com/RgoxaoFm.png)](https://imgur.com/RgoxaoF)
+
   
 
 ### Laguages Used
@@ -23,8 +25,9 @@ Using the arrow keys or swipe on touch devices, navigate the junior dev and try 
 
 ### Next  steps:
 
-- Light cycle mode (2 player)
 - socket.io full stack edition for live multiplayer
+- true i18n support
+
 
 ### PREP:
 
