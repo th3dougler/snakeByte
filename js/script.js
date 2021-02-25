@@ -644,9 +644,9 @@ function onTouchend(e) {
   let touch = e.changedTouches[0];
   touchArr.endX = touch.pageX;
   touchArr.endY = touch.pageY;
-  gameBoard.key =
+  gameBoard.keyP1 =
     overlay.style.display === "none" ? touchArr.getDirection() : "ArrowRight";
-}
+  }
 volumeSlider.oninput = function () {
   bgAudio.volume = volumeSlider.value / 100;
   winAudio.volume = volumeSlider.value / 100;
