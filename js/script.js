@@ -269,6 +269,11 @@ let interval = null;
 let boardDimensions = [21, 25];
 let initialBugs = 5;
 let bgAudio = new Audio("./res/10 - whaa.mp3");
+let winAudio = new Audio("./res/charge.wav");
+let loseAudio = new Audio("./res/bomb.wav");
+let loseLifeAudio = new Audio("./res/encounter.wav");
+let clickAudio = new Audio("./res/find_money.wav");
+
 
 let touchArr = {
   // object tracking single-touch
@@ -301,7 +306,6 @@ let snake2 = null;
 
 let bug = new Bug(initialBugs, gameBoard.posArr, snake.arr);
 
-
 /* global DOM delaration */
 let volumeSlider = null;
 let bgAudioToggle = null;
@@ -326,8 +330,18 @@ function globalInit() {
   start2PBtn = document.getElementById("start2p");
   volumeSlider = document.getElementById("volume-slider");
 
+  bgAudio.loop = true;
   bgAudio.volume = volumeSlider.value / 100;
+  winAudio.volume = volumeSlider.value / 100;
+  loseAudio.volume = volumeSlider.value / 100;
+  loseLifeAudio.volume = volumeSlider.value / 100;
+  clickAudio.volume = volumeSlider.value / 100;
+
   bgAudio.load();
+  winAudio.load();
+  loseAudio.load();
+  loseLifeAudio.load();
+  clickAudio.load();
 
   //EventListeners
   gameWindow.addEventListener("click", onClick);
@@ -338,8 +352,7 @@ function globalInit() {
   window.addEventListener("resize", onResize);
   window.addEventListener("load", onResize);
   //draw table into document DOM
-  gameBoardDOM = gameBoard.initTable(gameWindow); 
-  
+  gameBoardDOM = gameBoard.initTable(gameWindow);
 
   //Check if a local highscore has been set, if not, use default 0 value
   if (localHighscore > 0) {
@@ -383,20 +396,23 @@ function updateOverlay(parameter) {
       overlay.children[0].innerHTML = "GAME OVER";
       updateOverlayString = "PRESS RESET TO PLAY AGAIN!";
       overlay.style.animationName = "red-flash-in";
-      if (localStorage.getItem("snakeByteHS") < localHighscore) {
-        overlay.children[0].innerHTML = "CONGRATS!";
-        updateOverlayString =
-          "YOU SET A NEW HIGH SCORE: " +
-          localHighscore +
-          "</br>" +
-          updateOverlayString;
-        overlay.style.animationName = "green-flash-in";
-        localStorage.setItem("snakeByteHS", localHighscore);
-      }
       start2PBtn.style.display = "";
       startBtn.innerHTML = "RESET / [ SPACE ]";
       start2PBtn.innerHTML = "2 PLAYER";
       break;
+    case "gameOverHS":
+      overlay.children[0].innerHTML = "CONGRATS!";
+      updateOverlayString = "PRESS RESET TO PLAY AGAIN!";
+      overlay.style.animationName = "green-flash-in";
+      updateOverlayString =
+        "YOU SET A NEW HIGH SCORE: " +
+        localHighscore +
+        "</br>PRESS RESET TO PLAY AGAIN!";
+      start2PBtn.style.display = "";
+      startBtn.innerHTML = "RESET / [ SPACE ]";
+      start2PBtn.innerHTML = "2 PLAYER";
+      break;
+
     case "tieGame":
       overlay.children[0].innerHTML = "TIE GAME";
       updateOverlayString = "PRESS RESET TO PLAY AGAIN!";
@@ -453,11 +469,19 @@ function render() {
     if (isCollision === 1) {
       gameBoard.gameLives--;
       if (gameBoard.gameLives <= 0) {
-        updateOverlay("gameOver");
+        if (localStorage.getItem("snakeByteHS") < localHighscore) {
+          winAudio.play();
+          localStorage.setItem("snakeByteHS", localHighscore);
+          updateOverlay("gameOverHS");
+        }else {
+          loseAudio.play();
+          updateOverlay("gameOver");
+        }
         gameBoard = new GameBoard(boardDimensions[0], boardDimensions[1]);
         score = 0;
         tail = [];
       } else {
+        loseLifeAudio.play();
         updateOverlay("loseLife");
         gameBoard.newSpeed = gameBoard.gameSpeed;
       }
@@ -477,10 +501,13 @@ function render() {
   } else if (isCollision > 0 || isCollision2 > 0) {
     /* 2 player game collision logic*/
     if (isCollision >= 1 && isCollision2 >= 1) {
+      loseAudio.play();
       updateOverlay("tieGame");
     } else if (isCollision2 >= 1) {
+      winAudio.play();
       updateOverlay("p1Win");
     } else if (isCollision >= 1) {
+      loseAudio.play();
       updateOverlay("p2Win");
     }
     gameBoard.newSpeed = gameBoard.gameSpeed;
@@ -491,14 +518,13 @@ function render() {
     snake = new Snake(1, gameBoard, [], false);
     snake2 = new Snake(1, gameBoard, [], true);
     bug = new Bug(initialBugs, gameBoard.posArr, snake.arr);
-    
-  } else{
+  } else {
     //2player game, no collision, check timer to increase speed in 2p mode
-    if (Math.floor(gameBoard.gameTimer) % 5 === 0){
+    if (Math.floor(gameBoard.gameTimer) % 5 === 0) {
       gameBoard.newSpeed =
-      gameBoard.newSpeed > 50 ? gameBoard.newSpeed - 2.5 : 50;
-    clearInterval(interval);
-    interval = setInterval(render, gameBoard.newSpeed);
+        gameBoard.newSpeed > 50 ? gameBoard.newSpeed - 2.5 : 50;
+      clearInterval(interval);
+      interval = setInterval(render, gameBoard.newSpeed);
     }
   }
   scoreUpdate();
@@ -555,23 +581,24 @@ function scoreUpdate() {
   dispScore.innerHTML = Math.floor(snake.score);
   dispLives.innerHTML = gameBoard.gameLives;
   dispHS.innerHTML = localHighscore;
+  
 }
 /** click handler function
  * @param  {event} e returns where the click event took place
  */
 function onClick(e) {
-/* If player is pressing 1 or 2p start button, adjust overlay and start interval */
+  /* If player is pressing 1 or 2p start button, adjust overlay and start interval */
   let target = e.target;
   if (target.id === "start" || target.id === "start2p") {
+    clickAudio.play();
     interval = setInterval(render, gameBoard.gameSpeed);
     if (target.id === "start2p") {
       snake2 = new Snake(1, gameBoard, 0, true);
       updateOverlay("2PMode");
-    } else{
+    } else {
       updateOverlay("1PMode");
       snake2 = null;
     }
-    
   } else if (target === dispHS) {
     //clear the local HS by clicking on it 9 times, but dont tell anyone OK?
     cheatMode += cheatMode < 10 ? 1 : 0;
@@ -588,7 +615,6 @@ function onClick(e) {
  */
 
 function onKeydown(e) {
-  
   /* Probably would have done this using only keycodes in the future, call it a lack of forethought
   get keydown event and assign it to a variable depending on weather it is from 1p controller or 2p controller */
   let key = e.key;
@@ -609,7 +635,6 @@ function onKeydown(e) {
 }
 
 function onTouchstart(e) {
-  
   let touch = e.changedTouches[0];
   touchArr.startX = touch.pageX;
   touchArr.startY = touch.pageY;
@@ -623,6 +648,9 @@ function onTouchend(e) {
 }
 volumeSlider.oninput = function () {
   bgAudio.volume = volumeSlider.value / 100;
+  winAudio.volume = volumeSlider.value / 100;
+  loseAudio.volume = volumeSlider.value / 100;
+  loseLifeAudio.volume = volumeSlider.value / 100;
 };
 function onResize() {
   let scaleRatio = 0;
