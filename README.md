@@ -17,6 +17,7 @@
 ### Image/Media Sources
 [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P)
 [Modern Interiors Sprites](https://limezu.itch.io/moderninteriorslimeZu)
+[SoundsByDane - 8Bit Sound Pack](https://soundsbydane.itch.io/8-bit-sound-pack)
 [Whaaa - jefftheworld](https://jefftheworld.com)
 
 ### Get Started:
