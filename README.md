@@ -3,6 +3,7 @@
 
 [![screenshot1](https://i.imgur.com/Dow7qRkm.png)](https://imgur.com/Dow7qRk)
 [![screenshot2](https://i.imgur.com/NvlDdocm.png)](https://imgur.com/NvlDdoc)
+[![screenshot2](https://i.imgur.com/FqKdt7am.png)](https://imgur.com/FqKdt7a)
 [![screenshot3](https://i.imgur.com/R7rdzjum.png)](https://imgur.com/R7rdzju)
 [![screenshot4](https://i.imgur.com/ceJV5oFm.png)](https://imgur.com/ceJV5oF)
 [![screenshot4](https://i.imgur.com/RgoxaoFm.png)](https://imgur.com/RgoxaoF)
@@ -27,6 +28,8 @@ Using the arrow keys or swipe on touch devices, navigate the junior dev and try 
 
 - socket.io full stack edition for live multiplayer
 - true i18n support
+- add some enemies to make the game harder
+- improve overall aesthetic thru consistent sprites and such
 
 
 ### PREP:

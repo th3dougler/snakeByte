@@ -14,6 +14,8 @@
   --main-txt-color: #e6d5b8;
   --border: 3px solid #e6d5b8;
   --div-bg-color: #f0a500;
+  --game-width: 426px;
+  --game-height: 506px;
 }
 .flex-ctr {
   display: flex;
@@ -60,7 +62,7 @@ button:active {
 
 
 #game-window {
-  width: 430px;
+  width: var(--game-width);
   flex-direction: column;
   transform-origin: 50% 0;
   box-shadow: 0 0 10px var(--bg-blocks);
@@ -70,7 +72,7 @@ table {
   cursor: none;
   table-layout: fixed;
   width: 100%;
-  height: 516px;
+  height: var(--game-height);
   background-color: var(--div-bg-color);
   border: var(--border);
   border-spacing: 0;
@@ -84,9 +86,9 @@ table {
   flex-direction: column;
   justify-content: space-around;
   text-align: center;
-  width: 430px;
+  width: var(--game-width);
   top: 0;
-  height: 516px;
+  height: var(--game-height);
   padding: 10px;
   border: var(--border);
   background-color: rgba(0, 0, 0, 0.5);
