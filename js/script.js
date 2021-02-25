@@ -58,6 +58,7 @@ class GameBoard {
     return this.width * i + j;
   }
 }
+
 /* Snake contains all variables and functions related to position and collision of the snake on GameBoard */
 class Snake {
   /**create a new snake on argument gameBoard
