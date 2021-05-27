@@ -23,7 +23,7 @@
 ### Get Started:
 
 Using the arrow keys or swipe on touch devices, navigate the junior dev and try to squash as many bugs as possible before you accidentally cause a stack overflow (trip over your own stack)
-[play](th3dougler.github.io/snakeByte)
+[play](https://th3dougler.github.io/snakeByte/)
 
 ### Next  steps:
 
